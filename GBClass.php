@@ -407,25 +407,25 @@ class GBClass
 	public function uploadForm()
 	{
 		if(count($meta)==0){
-            $meta=array(
-                'uploaded_from'=>'GBClass',
-                'upload_date'=>date('Y-m-d', $datetime),
-            );
-        }
-        $meta=json_encode($meta);
-        $signature=$this->signature($this->_appid, $this->_appkey, $returnUrl, $datetime, $directory, $options, $meta);
-        $meta=urlencode($meta);        
+			$meta=array(
+				'uploaded_from'=>'GBClass',
+				'upload_date'=>date('Y-m-d', $datetime),
+			);
+		}
+		$meta=json_encode($meta);
+		$signature=$this->signature($this->_appid, $this->_appkey, $returnUrl, $datetime, $directory, $options, $meta);
+		$meta=urlencode($meta);        
 		$form=<<<FORM
 			<form action='http://upload.gridblaze.com' enctype='multipart/form-data' method='post'>
 				<input type="file" name="file">                
 				<input id="appid"       type="hidden"  name="appid"       value="$this->_appid" />
-			    <input id="enable_auth" type="hidden"  name="enable_auth" value="$enableAuth" />
-			    <input id="return_url"  type="hidden"  name="return_url"  value="$returnUrl" />
-			    <input id="directory"   type="hidden"  name="directory"   value="$directory" />
-			    <input id="options"     type="hidden"  name="options"     value="$options" />
-			    <input id="meta"        type="hidden"  name="meta"        value="$meta" />
-			    <input id="datetime"    type="hidden"  name="datetime"    value="$datetime" />
-			    <input id="signature"   type="hidden"  name="signature"   value="$signature" />
+				<input id="enable_auth" type="hidden"  name="enable_auth" value="$enableAuth" />
+				<input id="return_url"  type="hidden"  name="return_url"  value="$returnUrl" />
+				<input id="directory"   type="hidden"  name="directory"   value="$directory" />
+				<input id="options"     type="hidden"  name="options"     value="$options" />
+				<input id="meta"        type="hidden"  name="meta"        value="$meta" />
+				<input id="datetime"    type="hidden"  name="datetime"    value="$datetime" />
+				<input id="signature"   type="hidden"  name="signature"   value="$signature" />
 				<input type="submit" name="upload" value="submit">
 			</form>
 FORM;
