@@ -18,6 +18,9 @@ interface IGBClass
 	public function moveObject($name, $source, $destination);
 	public function downloadObject($name, $source);
 	
+	/**
+	 * Additional Features of the GBClass
+	 */
 	public function objectMetadata($name, $source);	
 	public function graphStorageUsage($from, $to);
 	public function graphBandwidthUtilized($from, $to);
