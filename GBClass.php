@@ -150,15 +150,9 @@ class GBClass
 			$this->auth();
 		}
 		switch($content){
-			case self::OBJECTS:
-				return $this->getListObject($directory);
-				break;
-			case self::DIRECTORIES:
-				return $this->getListDirectory($directory);
-				break;
-			default:
-				return $this->getAllList($directory);
-				break;
+			case self::OBJECTS: return $this->getListObject($directory);
+			case self::DIRECTORIES: return $this->getListDirectory($directory);
+			default: return $this->getAllList($directory);
 		}
 	}
 	/**
