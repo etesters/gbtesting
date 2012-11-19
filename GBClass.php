@@ -129,7 +129,7 @@ class GBClass
 			$this->_headers=array();
 			$this->_headers[]='X-Auth-User: ' . $this->_appid;
 			$this->_headers[]='X-Auth-Key: ' . $this->_appkey;
-			$data=$this->execute('GET', true);
+			$data=$this->execute("GET", true);
 			if($this->_token===null) $this->_token=$data['headers']['X-Auth-Token'];
 		}
 	}
