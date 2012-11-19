@@ -110,7 +110,7 @@ class GBClass
 	public function node($id='')
 	{
 		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/node/' . $id;
-        $this->_headers=array();
+		$this->_headers=array();
 		$this->_headers[]='Content-Type: application/' . $this->format;
 		return $this->execute('GET');
 	}
@@ -334,18 +334,18 @@ class GBClass
     
 	public function objectMetadata($name, $directory)
 	{
-        if($this->_token===null){
+		if($this->_token===null){
 			$this->auth();
 		}
 		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '/' . urlencode($this->cleanDirectory($directory) . $name);
-        $this->_headers=array();
+		$this->_headers=array();
 		$this->_headers[]='X-Auth-Token: ' . $this->_token;
-        $data=$this->execute("HEAD", true);
-        $headers=$data['headers'];
-        $metadata=array();
-        foreach($headers as $key=>$val){
-            if(strpos($key, 'X-Object-Meta')!==false) $metadata[$key]=$val;
-        }        
+		$data=$this->execute("HEAD", true);
+		$headers=$data['headers'];
+		$metadata=array();
+		foreach($headers as $key=>$val){
+			if(strpos($key, 'X-Object-Meta')!==false) $metadata[$key]=$val;
+		}
 		return $metadata;
 	}
 	public function graphStorageUsage($from, $to)
