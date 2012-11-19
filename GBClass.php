@@ -90,7 +90,7 @@ class GBClass
 	public function info()
 	{
 		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version;
-        $this->_headers=array();
+		$this->_headers=array();
 		$this->_headers[]='Content-Type: application/' . $this->format;		
 		return $this->execute('GET');
 	}
