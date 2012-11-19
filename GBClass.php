@@ -92,7 +92,7 @@ class GBClass
 		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version;
 		$this->_headers=array();
 		$this->_headers[]='Content-Type: application/' . $this->format;		
-		return $this->execute('GET');
+		return $this->execute("GET");
 	}
 	/**
 	* Get the list of nodes of GRIDBLAZE
@@ -112,7 +112,7 @@ class GBClass
 		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/node/' . $id;
 		$this->_headers=array();
 		$this->_headers[]='Content-Type: application/' . $this->format;
-		return $this->execute('GET');
+		return $this->execute("GET");
 	}
 	/**
 	* Authentication to GRIDBLAZE API
@@ -532,13 +532,13 @@ FORM;
 		$this->_appid=$appid;
 		$this->_appkey=$appkey;
 	}
-	private function execute($verb, $headers=false)
+	private function execute($verb, $displayHeaders=false)
 	{
 		$ch=curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->_url);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'GBClass');
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $this->_headers);
-		curl_setopt($ch, CURLOPT_HEADER, $headers);
+		curl_setopt($ch, CURLOPT_HEADER, $displayHeaders);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		if($this->_protocol==='https://'){
 			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
@@ -572,7 +572,7 @@ FORM;
 		}
 		$response=curl_exec($ch);
 		curl_close($ch);
-		if($headers){
+		if($displayHeaders){
 			return $this->raws($response);
 		}else{
 			return $response;
