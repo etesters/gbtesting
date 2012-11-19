@@ -81,7 +81,7 @@ class GBClass
 	* 
 	* <pre>
 	* $gbClass=new GBClass('Application ID', 'Application Key');
-	* $gbClass->format=[json/xml];
+	* $gbClass->format='json OR xml';
 	* $gbClass->info();
 	* </pre>
 	* 
@@ -100,7 +100,7 @@ class GBClass
 	* <pre>
 	* $id='ServerId';
 	* $gbClass=new GBClass('Application ID', 'Application Key');
-	* $gbClass->format=[json/xml];
+	* $gbClass->format='json OR xml';
 	* $gbClass->node($id);
 	* </pre>
 	* 
@@ -138,7 +138,7 @@ class GBClass
 	* 
 	* <pre>
 	* $gbClass=new GBClass('Application ID', 'Application Key');
-	* $gbClass->format=[json/xml];	
+	* $gbClass->format='json OR xml';	
 	* $gbClass->listing('/this/is/the/location/', '');
 	* </pre>
 	* 
@@ -311,7 +311,7 @@ class GBClass
 	* 
 	* <pre>
 	* $gbClass=new GBClass('Application ID', 'Application Key');
-	* $gbClass->moveObject('MyObjectName.extension', '/this/is/the/source/');
+	* $gbClass->downloadObject('MyObjectName.extension', '/this/is/the/source/');
 	* 
 	* @name $name The object name to download
 	* @name $source The source location of an object to download
@@ -329,9 +329,18 @@ class GBClass
 		$data=$this->execute("GET");
 		return $data;
 	}
-    
-    
-    
+    /**
+	* Get the metadata of an object
+	*
+	* <pre>
+	* $gbClass=new GBClass('Application ID', 'Application Key');
+	* $gbClass->objectMetadata('MyObjectName.extension', '/this/is/the/location/'); 
+	*
+	* @name $name The object name
+	* @name $directory The directory
+	* @return Array of metadata
+	* </pre>
+	*/
 	public function objectMetadata($name, $directory)
 	{
 		if($this->_token===null){
@@ -348,6 +357,21 @@ class GBClass
 		}
 		return $metadata;
 	}
+	/**
+	* Get the storage usage with date specified
+	*
+	* <pre>
+	* $gbClass=new GBClass('Application ID', 'Application Key');
+	* $gbClass->format='json OR xml';
+	* $from=
+	* $to=
+	* $gbClass->graphStorageUsage($from, $to);
+	*
+	* @name $from Start date to pull the record
+	* @name $to End date to pull the record
+	* @return json | xml Record
+	* </pre>
+	*/
 	public function graphStorageUsage($from, $to)
 	{
 		if($this->_token===null){
@@ -362,6 +386,21 @@ class GBClass
 		$data=$this->execute("GET");
 		return $data;
 	}
+	/**
+	* Get the bandwidth utilized with date specified
+	*
+	* <pre>
+	* $gbClass=new GBClass('Application ID', 'Application Key');
+	* $gbClass->format='json OR xml';
+	* $from=
+	* $to=
+	* $gbClass->graphBandwidthUtilized($from, $to);
+	*
+	* @name $from Start date to pull the record
+	* @name $to End date to pull the record
+	* @return json | xml Record
+	* </pre>
+	*/
 	public function graphBandwidthUtilized($from, $to)
 	{
 		if($this->_token===null){
@@ -374,8 +413,23 @@ class GBClass
 		$this->_headers[]='X-Graph-To: ' . $to;
 		$this->_headers[]='Content-Type: application/' . $this->format;
 		$data=$this->execute("GET");
-		return $data;	
+		return $data;		
 	}
+	/**
+	* Get the http requests with date specified
+	*
+	* <pre>
+	* $gbClass=new GBClass('Application ID', 'Application Key');
+	* $gbClass->format='json OR xml';
+	* $from=
+	* $to=
+	* $gbClass->graphHttpRequests($from, $to);
+	*
+	* @name $from Start date to pull the record
+	* @name $to End date to pull the record
+	* @return json | xml Record
+	* </pre>
+	*/
 	public function graphHttpRequests($from, $to)
 	{
 		if($this->_token===null){
@@ -390,6 +444,21 @@ class GBClass
 		$data=$this->execute("GET");
 		return $data;
 	}
+	/**
+	* Get the number of objects stored each day with date specified
+	*
+	* <pre>
+	* $gbClass=new GBClass('Application ID', 'Application Key');
+	* $gbClass->format='json OR xml';
+	* $from=
+	* $to=
+	* $gbClass->graphObjectsStored($from, $to);
+	*
+	* @name $from Start date to pull the record
+	* @name $to End date to pull the record
+	* @return json | xml Record
+	* </pre>
+	*/
 	public function graphObjectsStored($from, $to)
 	{
 		if($this->_token===null){
@@ -404,6 +473,19 @@ class GBClass
 		$data=$this->execute("GET");
 		return $data;
 	}
+	/**
+	* Create html form upload
+	*
+	* <pre>
+	* $gbClass=new GBClass('Application ID', 'Application Key');
+	* $gbClass->format='json OR xml';
+	* $from=
+	* $to=
+	* $gbClass->uploadForm();
+	*
+	* @return html form upload
+	* </pre>
+	*/
 	public function uploadForm()
 	{
 		if(count($meta)==0){
@@ -413,7 +495,7 @@ class GBClass
 			);
 		}
 		$meta=json_encode($meta);
-		$signature=$this->signature($this->_appid, $this->_appkey, $returnUrl, $datetime, $directory, $options, $meta);
+		$signature=$this->signature($returnUrl, $datetime, $directory, $options, $meta);
 		$meta=urlencode($meta);        
 		$form=<<<FORM
 			<form action='http://upload.gridblaze.com' enctype='multipart/form-data' method='post'>
@@ -431,11 +513,20 @@ class GBClass
 FORM;
 		return $form;
 	}
-	public function signature($appid, $appkey, $returnUrl, $datetime, $directory='/', $options='default', $meta='')
-	{		
-		return hash('sha256', $appid.$appkey.$returnUrl.$directory.$datetime.$options.$meta);
+	/**
+	* Generate signature for file upload
+	*
+	* <pre>
+	* $gbClass=new GBClass('Application ID', 'Application Key');
+	* $gbClass->signature();
+	*
+	* @return hash signature for file upload
+	* </pre>
+	*/
+	public function signature($returnUrl, $datetime, $directory='/', $options='default', $meta='')
+	{
+		return hash('sha256', $this->_appid.$this->_appkey.$returnUrl.$directory.$datetime.$options.$meta);
 	}
-
 	private function setAuthData($appid, $appkey)
 	{
 		$this->_appid=$appid;
