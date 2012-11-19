@@ -56,7 +56,7 @@ class GBClass
 	public function __construct($appid, $appkey)
 	{
 		if($appid==='' || $appid==null){
-			die('Application Id cannot be empty.');		
+			die('Application Id cannot be empty.');
 		}elseif($appkey==='' || $appkey===null){
 			die('Application Key cannot be empty.');
 		}else{
@@ -90,6 +90,7 @@ class GBClass
 	public function info()
 	{
 		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version;
+        $this->_headers=array();
 		$this->_headers[]='Content-Type: application/' . $this->format;		
 		return $this->execute('GET');
 	}
@@ -109,6 +110,7 @@ class GBClass
 	public function node($id='')
 	{
 		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/node/' . $id;
+        $this->_headers=array();
 		$this->_headers[]='Content-Type: application/' . $this->format;
 		return $this->execute('GET');
 	}
@@ -170,7 +172,7 @@ class GBClass
 	public function deleteDirectory($name, $directory='/')
 	{
 		if($this->_token===null){
-			$this->auth();			
+			$this->auth();
 		}
 		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '/' . urlencode($this->cleanDirectory($directory) . $name);
 		$this->_headers=array();
@@ -193,7 +195,7 @@ class GBClass
 	public function createDirectory($name, $directory='/')
 	{
 		if($this->_token===null){
-			$this->auth();			
+			$this->auth();
 		}
 		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '/' . urlencode($this->cleanDirectory($directory) . $name);
 		$this->_action=self::DIRECTORIES;
@@ -327,25 +329,80 @@ class GBClass
 		$data=$this->execute("GET");
 		return $data;
 	}
-	public function objectMetadata($name, $source)
+    
+    
+    
+	public function objectMetadata($name, $directory)
 	{
-	
+        if($this->_token===null){
+			$this->auth();
+		}
+		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '/' . urlencode($this->cleanDirectory($directory) . $name);
+        $this->_headers=array();
+		$this->_headers[]='X-Auth-Token: ' . $this->_token;
+        $data=$this->execute("HEAD", true);
+        $headers=$data['headers'];
+        $metadata=array();
+        foreach($headers as $key=>$val){
+            if(strpos($key, 'X-Object-Meta')!==false) $metadata[$key]=$val;
+        }        
+		return $metadata;
 	}
 	public function graphStorageUsage($from, $to)
 	{
-	
+		if($this->_token===null){
+			$this->auth();
+		}
+		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '/storage/usage/';
+		$this->_headers=array();
+		$this->_headers[]='X-Auth-Token: ' . $this->_token;
+		$this->_headers[]='X-Graph-From: ' . $from;
+		$this->_headers[]='X-Graph-To: ' . $to;
+		$this->_headers[]='Content-Type: application/' . $this->format;
+		$data=$this->execute("GET");
+		return $data;
 	}
 	public function graphBandwidthUtilized($from, $to)
 	{
-	
+		if($this->_token===null){
+			$this->auth();
+		}
+		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '/bandwidth/utilized/';			
+		$this->_headers=array();
+		$this->_headers[]='X-Auth-Token: ' . $this->_token;
+		$this->_headers[]='X-Graph-From: ' . $from;
+		$this->_headers[]='X-Graph-To: ' . $to;
+		$this->_headers[]='Content-Type: application/' . $this->format;
+		$data=$this->execute("GET");
+		return $data;	
 	}
 	public function graphHttpRequests($from, $to)
 	{
-	
+		if($this->_token===null){
+			$this->auth();
+		}
+		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '/http/requests/';
+		$this->_headers=array();
+		$this->_headers[]='X-Auth-Token: ' . $this->_token;
+		$this->_headers[]='X-Graph-From: ' . $from;
+		$this->_headers[]='X-Graph-To: ' . $to;
+		$this->_headers[]='Content-Type: application/' . $this->format;
+		$data=$this->execute("GET");
+		return $data;
 	}
 	public function graphObjectsStored($from, $to)
 	{
-	
+		if($this->_token===null){
+			$this->auth();
+		}
+		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '/objects/stored/';
+		$this->_headers=array();
+		$this->_headers[]='X-Auth-Token: ' . $this->_token;
+		$this->_headers[]='X-Graph-From: ' . $from;
+		$this->_headers[]='X-Graph-To: ' . $to;
+		$this->_headers[]='Content-Type: application/' . $this->format;
+		$data=$this->execute("GET");
+		return $data;
 	}
 	public function uploadForm()
 	{
@@ -394,6 +451,9 @@ class GBClass
 					curl_setopt($ch, CURLOPT_INFILE, $fhandle);
 					curl_setopt($ch, CURLOPT_VERBOSE, true);
 				}
+				break;
+            case "HEAD":
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $verb);
 				break;
 		}
 		$response=curl_exec($ch);
