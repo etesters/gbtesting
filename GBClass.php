@@ -327,6 +327,34 @@ class GBClass
 		$data=$this->execute("GET");
 		return $data;
 	}
+	public function objectMetadata($name, $source)
+	{
+	
+	}
+	public function graphStorageUsage($from, $to)
+	{
+	
+	}
+	public function graphBandwidthUtilized($from, $to)
+	{
+	
+	}
+	public function graphHttpRequests($from, $to)
+	{
+	
+	}
+	public function graphObjectsStored($from, $to)
+	{
+	
+	}
+	public function uploadForm()
+	{
+	
+	}
+	public function jsUploadWidget()
+	{
+	
+	}
 
 	private function setAuthData($appid, $appkey)
 	{
