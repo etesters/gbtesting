@@ -329,7 +329,7 @@ class GBClass
 		$data=$this->execute("GET");
 		return $data;
 	}
-    /**
+	/**
 	* Get the metadata of an object
 	*
 	* <pre>
