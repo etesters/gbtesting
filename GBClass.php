@@ -475,8 +475,8 @@ FORM;
 					curl_setopt($ch, CURLOPT_VERBOSE, true);
 				}
 				break;
-            case "HEAD":
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $verb);
+			case "HEAD":
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $verb);
 				break;
 		}
 		$response=curl_exec($ch);
