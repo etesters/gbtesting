@@ -151,11 +151,10 @@ class GBClass
 		if($this->_token===null){
 			$this->auth();
 		}
-		switch($content){
-			case self::OBJECTS: return $this->getListObject($directory);
-			case self::DIRECTORIES: return $this->getListDirectory($directory);
-			default: return $this->getAllList($directory);
-		}
+		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '?format=' . $this->format . '&prefix=' . urlencode($this->cleanDirectory($directory)) . '&data=' . $content;        
+		$this->_headers=array();
+		$this->_headers[]='X-Auth-Token: ' . $this->_token;
+		return $this->execute('GET');
 	}
 	/**
 	* Deleting a directory
@@ -611,26 +610,5 @@ FORM;
 		$directory=str_replace(' ', '_', $directory);
 		$directory=substr($directory, 1);		
 		return $directory;
-	}
-	private function getAllList($directory='/')
-	{
-		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '?format=' . $this->format . '&prefix=' . urlencode($this->cleanDirectory($directory)) . '&data=';
-		$this->_headers=array();
-		$this->_headers[]='X-Auth-Token: ' . $this->_token;
-		return $this->execute('GET');
-	}
-	private function getListObject($directory='/')
-	{
-		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '?format=' . $this->format . '&prefix=' . urlencode($this->cleanDirectory($directory)) . '&data=' . self::OBJECTS;
-		$this->_headers=array();
-		$this->_headers[]='X-Auth-Token: ' . $this->_token;
-		return $this->execute('GET');
-	}
-	private function getListDirectory($directory='/')
-	{
-		$this->_url=$this->_protocol . $this->_host . '/' . $this->_version . '/' . $this->_appid . '?format=' . $this->format . '&prefix=' . urlencode($this->cleanDirectory($directory)) . '&data=' . self::DIRECTORIES;
-		$this->_headers=array();
-		$this->_headers[]='X-Auth-Token: ' . $this->_token;
-		return $this->execute('GET');
 	}
 }
