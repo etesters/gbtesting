@@ -1,6 +1,31 @@
 /**
- * 
- */
+* Released Under MIT License
+* 
+* Copyright (C), API IO LLC - Singapore @link <http://www.ape.io>
+* 
+* @author @author <a href="mailto:alaboso@gmail.com">Amos L.</a>
+* @author Erson Puyos <erson.puyos@gmail.com>
+* 
+* Permission is hereby granted, free of charge, to any person obtaining 
+* a copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to 
+* whom the Software is furnished to do so, subject to the following conditions: 
+* 
+* The above copyright notice and this permission notice shall be 
+* included in all copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,  
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+* THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+/**
+* GBClass SDK - a simple class that interface the GRIDBLAZE API
+*/
 package com.apeio;
 
 import java.io.File;
@@ -12,6 +37,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.apache.http.Header;
 import org.apache.http.HttpRequest;
@@ -28,10 +55,6 @@ import org.apache.http.entity.FileEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpProtocolParams;
 
-/**
- * @author <a href="mailto:alaboso@gmail.com">Amos L.</a>
- * 
- */
 public class GBClass {
 
 	/*
@@ -123,7 +146,6 @@ public class GBClass {
 		this.map.put("Accept", "application/" + this.format);
 		return this.execute("GET", false, this.map);
 	}
-
 	/**
 	 * Authentication to GRIDBLAZE API
 	 * 
@@ -303,7 +325,6 @@ public class GBClass {
 		this.execute("PUT", true, this.map);
 		return this.responseMap.toString();
 	}
-
 	/**
 	 * Deleting an Object
 	 * 
@@ -334,7 +355,6 @@ public class GBClass {
 		this.execute("DELETE", true, this.map);
 		return this.responseMap.toString();
 	}
-
 	/**
 	 * Moving an Object
 	 * 
@@ -505,19 +525,72 @@ public class GBClass {
 		this.map.put("Content-Type", "application/" + this.format);
 		return this.execute("GET", false, this.map);
 	}
-	public String uploadForm(String returnUrl, String datetime, String directory, String options, String[] meta, String enableAuth)
+	/**
+	* Create html form upload
+	*
+	* <pre>
+	* String returnUrl="http://www.domain.com";
+	* String directory = "/";
+	* String datetime = String.valueOf(System.currentTimeMillis() / 1000);
+	* String options = "default";
+	* String enableAuth = "no";
+	* String meta = "{'1': '2'}";
+	* response = gbClass.uploadForm(returnUrl, datetime, directory, options, enableAuth, meta);
+	* </pre>
+    * 
+	* @return html form upload
+	*/
+	public String uploadForm(String returnUrl, String datetime, String directory, String options, String enableAuth, String meta)  throws NoSuchAlgorithmException
 	{
-		return "";
+		String signature = this.signature(returnUrl, datetime, directory, options, enableAuth, meta);
+		String form = "";
+		form += "<form id='fileupload' action='http://upload.gridblaze.com/index.php' method='POST' enctype='multipart/form-data'>";
+			form += "<input type='file' name='file' />";
+			form += "<input id='appid' type='hidden' name='appid' value='" + this.appid + "' />";
+			form += "<input id='return_url' type='hidden' name='return_url' value='" + returnUrl + "' />";
+			form += "<input id='directory' type='hidden' name='directory' value='"+ directory + "' />";
+			form += "<input id='datetime' type='hidden' name='datetime' value='" + datetime + "' />";
+			form += "<input id='options' type='hidden' name='options' value='" + options + "' />";
+			form += "<input id='enable_auth' type='hidden' name='enable_auth' value='" + enableAuth + "' />";
+			form += "<input id='meta' type='hidden' name='meta' value='" + URLEncoder.encode(meta) + "' />";
+			form += "<input id='signature' type='hidden' name='signature' value='" + signature + "' />";
+			form += "<input type='submit' name='upload' value='Upload' />";
+		form += "</form>";
+		return form;
 	}
-	public String signature(String returnUrl, String datetime, String directory, String options, String enableAuth, String meta)
+	/**
+	* Generate signature for file upload
+	*
+	* <pre>
+	* String returnUrl="http://www.domain.com";
+	* String directory = "/";
+	* String datetime = String.valueOf(System.currentTimeMillis() / 1000);		
+	* String options = "default";
+	* String enableAuth = "no";
+	* String meta = "{'1': '2'}";
+	* response  = gbClass.signature(returnUrl, datetime, directory, options, enableAuth, meta);
+	* </pre>
+    * 
+	* @return hash signature for file upload
+	*/
+	public String signature(String returnUrl, String datetime, String directory, String options, String enableAuth, String meta) throws NoSuchAlgorithmException
 	{
-		return "";
+		String message=this.appid + this.appkey + returnUrl + directory + datetime + options + enableAuth + meta;
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		md.update(message.getBytes());
+		byte byteData[] = md.digest();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < byteData.length; i++)
+		{
+			sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+		}
+		return sb.toString();
 	}
 	/**
 	 * Return date with format Year-Month-Date
 	 * 
 	 * @param day
-	 * 		0  = Current Date
+	 * 		 0 = Current Date
 	 * 		-1 = Subtract one day at current date
 	 * 		+1 = Add one day at current date
 	 * @return

@@ -3,6 +3,8 @@
  */
 package com.apeio;
 
+import java.security.NoSuchAlgorithmException;
+
 //import java.io.File;
 //import java.util.Calendar;
 
@@ -14,9 +16,10 @@ public class Tester {
 
 	/**
 	 * @param args
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public static void main(String[] args) {
-		GBClass gbClass = new GBClass("", "");		
+	public static void main(String[] args) throws NoSuchAlgorithmException {
+		GBClass gbClass = new GBClass("27e081d7", "25ab189e95d16aad4ec6ef8ed94db92b");		
 		String response = "";
 		
 		//response = gbClass.info();
@@ -67,8 +70,21 @@ public class Tester {
 		//String to = gbClass.gbDate(0);
 		//response = gbClass.graphObjectsStored(from, to);
 		
+		//String returnUrl="http://www.domain.com";
+		//String directory = "/";
+		//String datetime = String.valueOf(System.currentTimeMillis() / 1000);		
+		//String options = "default";
+		//String enableAuth = "no";
+		//String meta = "{'1': '2'}";
+		//response = gbClass.uploadForm(returnUrl, datetime, directory, options, enableAuth, meta);
 		
-		
+		String returnUrl="http://www.domain.com";
+		String directory = "/";
+		String datetime = String.valueOf(System.currentTimeMillis() / 1000);		
+		String options = "default";
+		String enableAuth = "no";
+		String meta = "{'1': '2'}";
+		response  = gbClass.signature(returnUrl, datetime, directory, options, enableAuth, meta);
 		
 		System.out.println(response);
 	}

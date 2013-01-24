@@ -485,7 +485,7 @@ class GBClass
     * 
 	* @return html form upload
 	*/
-	public function uploadForm($returnUrl, $datetime, $directory='/', $options='default', $meta=array(), $enableAuth='no')
+	public function uploadForm($returnUrl, $datetime, $directory='/', $options='default', $enableAuth='no', $meta=array())
 	{
 		if(count($meta)==0){
 			$meta=array(
