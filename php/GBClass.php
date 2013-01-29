@@ -120,7 +120,7 @@ class GBClass
 	* <pre>
 	* $gbClass=new GBClass('Application ID', 'Application Key');	
 	* $gbClass->auth();
-    * $token=$gbClass->getToken();
+	* $token=$gbClass->getToken();
 	* </pre>
 	*/ 
 	public function auth()
@@ -317,7 +317,7 @@ class GBClass
 	* $gbClass=new GBClass('Application ID', 'Application Key');
 	* $gbClass->downloadObject('MyObjectName.extension', '/this/is/the/source/');
 	* </pre>
-    * 
+	* 
 	* @name $nodeid The object node id
 	* @name $name The object name to download
 	* @name $source The source location of an object to download
@@ -338,7 +338,7 @@ class GBClass
 	* $gbClass=new GBClass('Application ID', 'Application Key');
 	* $gbClass->objectMetadata('MyObjectName.extension', '/this/is/the/location/'); 
 	* </pre>
-    * 
+	* 
 	* @name $name The object name
 	* @name $directory The directory
 	* @return Array of metadata	
@@ -368,7 +368,7 @@ class GBClass
 	* $to=date('Y-m-d');
 	* $from=date('Y-m-d', strtotime(date('Y-m-d', strtotime($to)) . "-7 day"));
 	* $gbClass->graphStorageUsage($from, $to);
-    * </pre>
+	* </pre>
 	*
 	* @name $from Start date to pull the record
 	* @name $to End date to pull the record
@@ -398,7 +398,7 @@ class GBClass
 	* $from=date('Y-m-d', strtotime(date('Y-m-d', strtotime($to)) . "-7 day"));
 	* $gbClass->graphBandwidthUtilized($from, $to);
 	* </pre>
-    * 
+	* 
 	* @name $from Start date to pull the record
 	* @name $to End date to pull the record
 	* @return json | xml Record
@@ -427,7 +427,7 @@ class GBClass
 	* $from=date('Y-m-d', strtotime(date('Y-m-d', strtotime($to)) . "-7 day"));
 	* $gbClass->graphHttpRequests($from, $to);
 	* </pre>
-    * 
+	* 
 	* @name $from Start date to pull the record
 	* @name $to End date to pull the record
 	* @return json | xml Record
@@ -456,7 +456,7 @@ class GBClass
 	* $from=date('Y-m-d', strtotime(date('Y-m-d', strtotime($to)) . "-7 day"));
 	* $gbClass->graphObjectsStored($from, $to);
 	* </pre>
-    * 
+	* 
 	* @name $from Start date to pull the record
 	* @name $to End date to pull the record
 	* @return json | xml Record
@@ -482,7 +482,7 @@ class GBClass
 	* $gbClass=new GBClass('Application ID', 'Application Key');
 	* $form=$gbClass->uploadForm('http://www.domain.com', time());
 	* </pre>
-    * 
+	* 
 	* @return html form upload
 	*/
 	public function uploadForm($returnUrl, $datetime, $directory='/', $options='default', $enableAuth='no', $meta=array())
@@ -519,7 +519,7 @@ FORM;
 	* $gbClass=new GBClass('Application ID', 'Application Key');
 	* $signature=$gbClass->signature('http://www.domain.com', time());
 	* </pre>
-    * 
+	* 
 	* @return hash signature for file upload
 	*/
 	public function signature($returnUrl, $datetime, $directory='/', $options='default', $enableAuth='no', $meta=array())
